@@ -1,0 +1,44 @@
+#es_host: http://192.168.70.2
+es_hosts: [http://192.168.70.2, http://192.168.70.10, http://192.168.70.11]
+es_port: 9200
+name: ejemp
+type: frequency
+index: ejemp*
+num_events: 2
+timeframe:
+    hours: 1
+    #se filtra con los campos del indice que se visualiza en kibana (desplegar > ir a campo Field)
+    # el nombre debe ser tal cual se encuentra en FIELD y su valor a coincidir columna VALUE
+filter:
+- term:
+    codigo: "202"
+    
+#conexión 
+alert: hivealerter
+hive_connection:
+  hive_host: http://192.168.70.7
+  hive_port: 9000
+  hive_apikey: Cd71NrCy9FQmDfBuYHuctZSk1r7sPcn3
+
+hive_alert_config:
+  type: 'external'
+  source: 'elastalert'
+ 
+  follow: True
+  #description: '{rule[name]}'
+  description: '............'
+  severity: 2
+  # rule name hace referencia la nombre linea 3 de este documento, 
+  # match con los campos que se necesite emparejar si es el Field agente.name sería '{match[agent][ip]}
+  # para ingresar otro match coma y un espacio y repetir la misma logica 
+  tags: ['name','ip', 'codigo']
+  
+  #tags: ['{rule[name]}', '{match[agent][ip]}', '{match[predecoder][program_name]}']
+  title: 'Error Ejemplo'
+  tlp: 3
+  status: 'New'
+  follow: True
+# genera el obserbable del tipo IP enjh tehhive
+hive_observable_data_mapping:
+   - ip: ip
+  #- ip: "{match[ip]}"
