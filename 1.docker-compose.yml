@@ -3,6 +3,7 @@ services:
   sirpElasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.15.2
     container_name: elasticsearch    
+    restart: unless-stopped
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -44,6 +45,7 @@ services:
   sirpElasticsearch2:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.15.2
     container_name: elasticsearch2
+    restart: unless-stopped
     environment:
       - node.name=elasticsearch2
       - cluster.name=es-docker-cluster
@@ -70,6 +72,7 @@ services:
   sirpElasticsearch3:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.15.2
     container_name: elasticsearch3
+    restart: unless-stopped
     environment:
       - node.name=elasticsearch3
       - cluster.name=es-docker-cluster
@@ -97,6 +100,7 @@ services:
   sirpLogstash:
     image: docker.elastic.co/logstash/logstash:7.15.2
     container_name: logstash
+    restart: unless-stopped
     ports:
       - "5044:5044"
     volumes:
@@ -116,6 +120,7 @@ services:
   sirpKibana:
     image: docker.elastic.co/kibana/kibana:7.15.2
     container_name: kibana
+    restart: unless-stopped
     ports:
       - "5601:5601"
     environment: 
@@ -151,6 +156,7 @@ services:
     #image: ivankrizsan/elastalert:latest
     image: jertel/elastalert2:2.2.3
     container_name: elastalert
+    restart: unless-stopped
     # cap_add:
     #   - SYS_TIME
     #   - SYS_NICE
@@ -188,8 +194,9 @@ services:
 
   cortex:
     #image: thehiveproject/cortex:latest
-    image: thehiveproject/cortex:3.1.3
+    image: thehiveproject/cortex:3.1.3-1
     container_name: cortex
+    restart: unless-stopped
     ports:
       - "0.0.0.0:9001:9001"
     #environment:
@@ -218,6 +225,7 @@ services:
     #image: thehiveproject/thehive:latest
     image: thehiveproject/thehive:3.5.1-1
     container_name: thehive
+    restart: unless-stopped
     depends_on:
       - sirpElasticsearch
       - cortex
@@ -235,12 +243,96 @@ services:
     networks:
       red_sirp:
         ipv4_address: 192.168.70.7
+  
+
+  redis:
+    #image: redis:latest
+    image: redis:6.2.6
+    container_name: redis
+    restart: unless-stopped
+    mem_limit: 1g
+    cpuset: "3"
+    networks:
+      red_sirp:
+        ipv4_address: 192.168.70.8
+  
+
+  db:
+    #image: mysql:latest
+    image: mysql:8.0.27
+    container_name: db
+    restart: unless-stopped
+    command: --default-authentication-plugin=mysql_native_password   
+    environment:
+      - "MYSQL_USER=misp"
+      - "MYSQL_PASSWORD=example"
+      - "MYSQL_ROOT_PASSWORD=password"
+      - "MYSQL_DATABASE=misp"
+    volumes:
+      - ./vol/mysql:/var/lib/mysql
+      #- volmysql:/var/lib/mysql
+      
+    ports:
+      - "3306:3306"
+    security_opt:
+      - seccomp:unconfined
+    mem_limit: 1g
+    cpuset: "3"
+    networks:
+      red_sirp:
+        ipv4_address: 192.168.70.9
+
+  misp:
+    #image: coolacid/misp-docker:core-latest
+    image: coolacid/misp-docker:core-v2.4.150a
+    container_name: misp
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - db
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      - "HOSTNAME=https://localhost"
+      - "REDIS_FQDN=redis"
+      - "INIT=true"             # Initialze MISP, things includes, attempting to import SQL and the Files DIR
+      - "CRON_USER_ID=1"        # The MISP user ID to run cron jobs as
+      - "DISIPV6=true" # Disable IPV6 in nginx  
+    volumes:
+      - ./misp/www/app/Config/:/var/www/MISP/app/Config/
+      - ./misp/www/app/fiels:/var/www/MISP/app/files
+      - ./ssl:/etc/ssl/certs
+
+    mem_limit: 1g
+    cpuset: "3"
+    networks:
+      red_sirp:
+        ipv4_address: 192.168.70.20
+
+  misp-modules:
+    #image: coolacid/misp-docker:modules-latest
+    image: coolacid/misp-docker:modules-v2.4.150a
+    container_name: misp-modules
+    environment:
+      - "REDIS_BACKEND=redis"
+    depends_on:
+      - redis
+      - db
+    mem_limit: 1g
+    cpuset: "3"
+    networks:
+      red_sirp:
+        ipv4_address: 192.168.70.21
+
+
 
 volumes:
   volElasticsearchData:
   volElasticsearchData2:
   volElasticsearchData3:
   volkibana:
+  #volmysql:
 
 networks:
   red_sirp:

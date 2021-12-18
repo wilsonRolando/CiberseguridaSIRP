@@ -6,6 +6,8 @@ ejemplo.log
 catalina.out.log
 Dockerfile
 
+misp 
+vol
 
 filebeat-7.15.2-linux-x86_64.tar.gz
 filebeat-7.15.2
