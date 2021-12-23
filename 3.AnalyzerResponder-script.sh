@@ -30,3 +30,4 @@ docker restart cortex
 # crear indice
 docker exec -ti -u 0 elastalert bash -c "elastalert-create-index"
 
+

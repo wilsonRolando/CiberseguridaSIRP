@@ -6,9 +6,12 @@ docker stop elasticsearch elasticsearch2 elasticsearch3 kibana elastalert cortex
 #sudo chown -R 1000:1000 $PWD/volumes
 #sudo rm -rfv $PWD/cortex/Cortex-Analyzers
 
+
+sudo chown -R 1000:1000 $PWD/kibana
+
 sudo chown -R 1000:1000 $PWD/logstash
 
-#sudo chown -R 1000:1000 $PWD/kibana
+sudo chown -R 1000:1000 $PWD/kibana
 
 sudo chown -R 1000:1000 $PWD/elastAlert
 

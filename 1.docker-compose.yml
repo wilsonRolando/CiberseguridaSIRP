@@ -118,9 +118,12 @@ services:
 
 
   sirpKibana:
-    image: docker.elastic.co/kibana/kibana:7.15.2
+    #image: docker.elastic.co/kibana/kibana:7.15.2
+    image: docker.elastic.co/kibana/kibana:7.14.2
     container_name: kibana
     restart: unless-stopped
+    #command: bash -c "cd /usr/share/kibana; /usr/share/kibana/bin/kibana-plugin install https://packages.wazuh.com/4.x/ui/kibana/wazuh_kibana-4.2.5_7.14.2-1.zip "
+          
     ports:
       - "5601:5601"
     environment: 
@@ -135,20 +138,20 @@ services:
       #ELASTICSEARCH_HOSTS: http://sirpElasticsearch3:9200
     volumes:
       - volkibana:/usr/share/kibana/data
+      - ./kibana/config/:/usr/share/kibana/data/wazuh/config/
       #- $PWD/volumes/volkibana:/usr/share/kibana/data
-      #- $PWD/kibana/config:/usr/share/kibana/config
+      #- ./kibana/config/:/usr/share/kibana/config/
     networks:
       red_sirp:
         ipv4_address: 192.168.70.4
-    # healthcheck:
-    #   interval: 10s
-    #   retries: 20
     depends_on:
       - sirpElasticsearch
       - sirpElasticsearch2
       - sirpElasticsearch3
     mem_limit: 1g
     cpuset: "3"
+    links:
+      - wazuh:wazuh
     # links:
     #   - sirpElasticsearch
 
@@ -206,6 +209,7 @@ services:
     volumes:
       - ./cortex/application.conf:/etc/cortex/application.conf
       - ./cortex/Cortex-Analyzers/analyzers/:/opt/Cortex-Analyzers/analyzers/
+      - ./cortex/Cortex-Analyzers/responders/:/opt/Cortex-Analyzers/responders/
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp:/tmp
      
@@ -310,10 +314,12 @@ services:
       red_sirp:
         ipv4_address: 192.168.70.20
 
+
   misp-modules:
     #image: coolacid/misp-docker:modules-latest
     image: coolacid/misp-docker:modules-v2.4.150a
     container_name: misp-modules
+    restart: unless-stopped
     environment:
       - "REDIS_BACKEND=redis"
     depends_on:
@@ -325,7 +331,43 @@ services:
       red_sirp:
         ipv4_address: 192.168.70.21
 
+  wazuh:
+    image: wazuh/wazuh:4.2.5
+    container_name: wazuh
+    hostname: wazuh-manager
+    restart: unless-stopped
+    ports:
+      - "1514:1514"
+      - "1515:1515"
+      - "514:514/udp"
+      - "55000:55000"
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      # - ELASTIC_USERNAME=admin
+      # - ELASTIC_PASSWORD=admin
+      # - SSL_CERTIFICATE=./ssl/misp.crt
+      # - SSL_KEY=./ssl/misp.key
+      - FILEBEAT_SSL_VERIFICATION_MODE=none
 
+    volumes:  
+      - ossec_api_configuration:/var/ossec/api/configuration
+      - ossec_etc:/var/ossec/etc
+      - ossec_logs:/var/ossec/logs
+      - ossec_queue:/var/ossec/queue
+      - ossec_var_multigroups:/var/ossec/var/multigroups
+      - ossec_integrations:/var/ossec/integrations
+      - ossec_active_response:/var/ossec/active-response/bin
+      - ossec_agentless:/var/ossec/agentless
+      - ossec_wodles:/var/ossec/wodles
+      - filebeat_etc:/etc/filebeat
+      - filebeat_var:/var/lib/filebeat
+    mem_limit: 2g
+    cpuset: "0"
+    networks:
+      red_sirp:
+        ipv4_address: 192.168.70.22
+  
+  
 
 volumes:
   volElasticsearchData:
@@ -333,6 +375,19 @@ volumes:
   volElasticsearchData3:
   volkibana:
   #volmysql:
+  ossec_api_configuration:
+  ossec_etc:
+  ossec_logs:
+  ossec_queue:
+  ossec_var_multigroups:
+  ossec_integrations:
+  ossec_active_response:
+  ossec_agentless:
+  ossec_wodles:
+  filebeat_etc:
+  filebeat_var:
+  
+  
 
 networks:
   red_sirp:

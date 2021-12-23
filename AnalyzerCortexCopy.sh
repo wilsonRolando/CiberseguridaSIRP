@@ -40,6 +40,7 @@ pip install -U pip setuptools && sudo pip3 install -U pip setuptools
 
 #git clone https://github.com/TheHive-Project/Cortex-Analyzers
 
+# Responder y analyzers
 # recorre el directorio analyzers descargado y recoore recursivamente el archivo de requerimientos   
 for I in $(find Cortex-Analyzers -name 'requirements.txt'); do sudo -H pip install -r $I; done && \
 for I in $(find Cortex-Analyzers -name 'requirements.txt'); do sudo -H pip3 install -r $I || true; done
