@@ -7,7 +7,7 @@ catalina.out.log
 Dockerfile
 
 misp 
-vol
+volmysql
 
 filebeat-7.15.2-linux-x86_64.tar.gz
 filebeat-7.15.2

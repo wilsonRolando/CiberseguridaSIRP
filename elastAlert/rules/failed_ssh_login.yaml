@@ -1,5 +1,6 @@
 #es_host: http://192.168.70.2
-es_hosts: [http://192.168.70.2, http://192.168.70.10, http://192.168.70.11]
+#es_hosts: [http://192.168.70.2, http://192.168.70.10, http://192.168.70.11]
+es_hosts: [http://elasticsearch1, http://elasticsearch2, http://elasticsearch3]
 es_port: 9200
 name: ejemp
 type: frequency
@@ -16,12 +17,12 @@ filter:
 #conexión 
 alert: hivealerter
 hive_connection:
-  hive_host: http://192.168.70.7
+  hive_host: http://thehive #192.168.70.7
   hive_port: 9000
-  hive_apikey: 0JONMYP+k6jFgkQ2PAGK9eSwB3uWnleP
+  hive_apikey: M/WHxQnqqypufkEFuqxDLr8zeUpG4DE8
 
 hive_alert_config:
-  type: 'external'
+  type: 'external-elastalert'
   source: 'elastalert'
  
   follow: True

@@ -214,7 +214,7 @@
       # run_as: <true|false>
 hosts:
   - default:
-     url: https://192.168.70.22
+     url: https://wazuh
      port: 55000
      username: wazuh-wui
      password: wazuh-wui
