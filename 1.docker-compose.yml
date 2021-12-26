@@ -115,7 +115,7 @@ services:
       - elasticsearch1
       - elasticsearch2
       - elasticsearch3
-    mem_limit: 1g
+    mem_limit: 2g
 
 
   kibana:
@@ -189,6 +189,7 @@ services:
       - elasticsearch2
       - elasticsearch3
       - kibana
+      - thehive
     mem_limit: 1g
     cpuset: "5"
     networks:
@@ -261,12 +262,37 @@ services:
     image: redis:6.2.6
     container_name: redis
     restart: unless-stopped
+    ports:
+     - "6379:6379"
+    environment:
+     - REDIS_REPLICATION_MODE=master
+
     mem_limit: 1g
     cpuset: "3"
     networks:
       red_sirp:
         ipv4_address: ${IP_REDIS:?err} #192.168.70.8
   
+  # redislogs:
+  #   image: redis:6.2
+  #   container_name: redislogs
+
+  #   command: redis-server --requirepass Admin@123456
+  #   ports:
+  #    - "6379:6379"
+
+  #   volumes:
+  #    - $PWD/redis_logst/redis-data:/var/lib/redis
+  #    - $PWD/redis_logst/redis.conf:/usr/local/etc/redis/redis.conf
+
+  #   environment:
+  #    - REDIS_REPLICATION_MODE=master
+  #   mem_limit: 2g
+  #   cpuset: "3"
+  #   networks:
+  #     red_sirp:
+  #       ipv4_address: ${IP_REDIS_LOGS:?err} 
+
 
   db:
     #image: mysql:latest
@@ -305,7 +331,7 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      #- "HOSTNAME=https://${IP_MISP:?err}"
+      - "HOSTNAME=https://${IP_MISP:?err}"
       - "REDIS_FQDN=redis"
       - "INIT=true"             # Initialze MISP, things includes, attempting to import SQL and the Files DIR
       - "CRON_USER_ID=1"        # The MISP user ID to run cron jobs as
@@ -317,7 +343,7 @@ services:
       # - "MYSQL_PASSWORD=example" # NOTE: This should be AlphaNum with no Special Chars. Otherwise, edit config files after first run. 
       # - "MYSQL_DATABASE=misp"
      #### Optional Settings
-      - "NOREDIR=false" # Do not redirect port 80     
+      - "NOREDIR=true" # Do not redirect port 80     
      # - "CERTAUTH=optional" # Can be set to optional or on - Step 2 of https://github.com/MISP/MISP/tree/2.4/app/Plugin/CertAuth is still required
     #  - "SECURESSL=true" # Enable higher security SSL in nginx
       - "MISP_MODULES_FQDN=http://misp-modules" # Set the MISP Modules FQDN, used for Enrichment_services_url/Import_services_url/Export_services_url
@@ -326,10 +352,10 @@ services:
 
     volumes:
       - ./misp/www/app/Config/:/var/www/MISP/app/Config/
-      - ./misp/www/app/fiels:/var/www/MISP/app/files
+      #- ./misp/www/app/fiels:/var/www/MISP/app/files
       - ./ssl:/etc/ssl/certs
-      - ./misp/:/var/www/MISP/.gnupg
-      - ./misp/:/var/www/MISP/.smime
+      # - ./misp/:/var/www/MISP/.gnupg
+      # - ./misp/:/var/www/MISP/.smime
 
     mem_limit: 1g
     cpuset: "3"

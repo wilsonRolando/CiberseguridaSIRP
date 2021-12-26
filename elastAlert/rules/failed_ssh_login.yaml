@@ -19,7 +19,7 @@ alert: hivealerter
 hive_connection:
   hive_host: http://thehive #192.168.70.7
   hive_port: 9000
-  hive_apikey: M/WHxQnqqypufkEFuqxDLr8zeUpG4DE8
+  hive_apikey: Kl++7KuLRP/XPB3wyIwg6E0Tln2S9XBi
 
 hive_alert_config:
   type: 'external-elastalert'
