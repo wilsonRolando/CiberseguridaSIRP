@@ -29,3 +29,7 @@
 {"date":"2021-12-26T03:50:23.329Z","level":"info","location":"initialize","message":"App revision: 4206-1"}
 {"date":"2021-12-26T03:50:23.330Z","level":"info","location":"initialize","message":"Total RAM: 13990MB"}
 {"date":"2021-12-26T03:55:00.254Z","level":"error","location":"cron-scheduler|SaveDocument","message":"resource_already_exists_exception: [resource_already_exists_exception] Reason: index [wazuh-statistics-2021.52w/1raWNPpTTMWUWFnz8CB9-Q] already exists"}
+{"date":"2021-12-26T23:53:20.125Z","level":"info","location":"initialize","message":"Kibana index: .kibana"}
+{"date":"2021-12-26T23:53:20.127Z","level":"info","location":"initialize","message":"App revision: 4206-1"}
+{"date":"2021-12-26T23:53:20.127Z","level":"info","location":"initialize","message":"Total RAM: 13990MB"}
+{"date":"2021-12-27T00:00:00.929Z","level":"error","location":"cron-scheduler|SaveDocument","message":"resource_already_exists_exception: [resource_already_exists_exception] Reason: index [wazuh-statistics-2021.53w/BQkEZcY_RTeyNn13bRVJCQ] already exists"}
