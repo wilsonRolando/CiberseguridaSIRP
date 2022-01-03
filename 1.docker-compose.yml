@@ -298,8 +298,8 @@ services:
       - ./misp/www/app/Config/:/var/www/MISP/app/Config/
       - ./misp/www/app/files:/var/www/MISP/app/files
       - ./ssl:/etc/ssl/certs
-      - ./misp/:/var/www/MISP/.gnupg
-      - ./misp/:/var/www/MISP/.smime
+      #- ./misp/:/var/www/MISP/.gnupg
+      #- ./misp/:/var/www/MISP/.smime
     mem_limit: 2g
     cpuset: "3"
     networks:
