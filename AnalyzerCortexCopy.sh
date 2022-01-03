@@ -7,7 +7,7 @@ apt-get install sudo
 
 # comprueba si existe la carpeta entonces cambia de nombre para archivar 
 
-echo "instalando analyzer"
+echo "instalando analyzer..........................................."
 # sudo apt-get install -y --no-install-recommends python-pip python2.7-dev python3-pip python3-dev ssdeep libfuzzy-dev libfuzzy2 libimage-exiftool-perl libmagic1 build-essential git libssl-dev
 #    sudo pip install -U pip setuptools && sudo pip3 install -U pip setuptools  
 #cd /opt/

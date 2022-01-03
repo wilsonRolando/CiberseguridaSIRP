@@ -24,15 +24,9 @@ services:
       # - xpack.security.transport.ssl.truststore.type=PKCS12     
       # - xpack.security.transport.ssl.keystore.password=123456
       # - xpack.security.transport.ssl.truststore.password=123456
-
-
     volumes:
       - volElasticsearchData:/usr/share/elasticsearch/data
       - $PWD/ssl/elastic-stack-ca.p12:/usr/share/elasticsearch/config/elastic-stack-ca.p12
-      #- $PWD/volumes/volElasticsearchData:/usr/share/elasticsearch/data      
-      
-
-      #- ./custom_elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     networks:
       red_sirp:
         ipv4_address: ${IP_ELASTICSEARCH1:?err}
@@ -57,8 +51,6 @@ services:
       - bootstrap.memory_lock=true
     volumes:
       - volElasticsearchData2:/usr/share/elasticsearch/data 
-      #- $PWD/volumes/volElasticsearchData2:/usr/share/elasticsearch/data      
-    
     networks:
       red_sirp:
         ipv4_address: ${IP_ELASTICSEARCH2:?err}  
@@ -85,7 +77,6 @@ services:
       - bootstrap.memory_lock=true
     volumes:
       - volElasticsearchData3:/usr/share/elasticsearch/data
-      #- $PWD/volumes/volElasticsearchData3:/usr/share/elasticsearch/data
     networks:
       red_sirp:
         ipv4_address: ${IP_ELASTICSEARCH3:?err}
@@ -110,21 +101,19 @@ services:
       - $PWD/logstash/logstash.conf:/usr/share/logstash/pipeline/logstash.conf      
     networks:
       red_sirp:
-        ipv4_address: ${IP_LOGSTASH:?err} #192.168.70.3
+        ipv4_address: ${IP_LOGSTASH:?err} 
     depends_on:
       - elasticsearch1
       - elasticsearch2
       - elasticsearch3
-    mem_limit: 2g
+    mem_limit: 3g
 
 
   kibana:
-    #image: docker.elastic.co/kibana/kibana:7.15.2
     image: docker.elastic.co/kibana/kibana:7.14.2
     container_name: kibana
     restart: unless-stopped
     #command: bash -c "cd /usr/share/kibana; /usr/share/kibana/bin/kibana-plugin install https://packages.wazuh.com/4.x/ui/kibana/wazuh_kibana-4.2.5_7.14.2-1.zip "
-          
     ports:
       - "5601:5601"
     environment: 
@@ -135,50 +124,40 @@ services:
       # LOGGING_VERBOSE: "true"     
       #ELASTICSEARCH_USERNAME: "elastic"
       #ELASTICSEARCH_PASSWORD: '123456'
-    
     volumes:
       - volkibana:/usr/share/kibana/data
       - ./kibana/config/:/usr/share/kibana/data/wazuh/config/
       - ./kibana/logs:/usr/share/kibana/data/wazuh/logs
-      #- $PWD/volumes/volkibana:/usr/share/kibana/data
       #- ./kibana/config/:/usr/share/kibana/config/
     networks:
       red_sirp:
-        ipv4_address: ${IP_KIBANA:?err} #192.168.70.4
+        ipv4_address: ${IP_KIBANA:?err} 
     depends_on:
       - elasticsearch1
       - elasticsearch2
       - elasticsearch3
-    mem_limit: 1g
+    mem_limit: 2g
     cpuset: "3"
     links:
       - wazuh:wazuh
-    # links:
-    #   - sirpElasticsearch
+
 
   elastalert:
-    #image: ivankrizsan/elastalert:latest
     image: jertel/elastalert2:2.2.3
     container_name: elastalert
     restart: unless-stopped
-    # cap_add:
-    #   - SYS_TIME
-    #   - SYS_NICE
- 
+    cap_add:
+      - SYS_TIME
+      - SYS_NICE 
     volumes:
       - ./elastAlert/config/config.yaml:/opt/elastalert/config.yaml
       - ./elastAlert/logs:/opt/logs
       - ./elastAlert/rules:/opt/rules
       #- ./elastAlert/config:/opt/config
-    # links:
-    #   - elasticsearch:sirpElasticsearch
     environment:
       - ES_HOST=elasticsearch1
       - ES_PORT=9200
-      - ES_HOSTS=elasticsearch2,elasticsearch3
-
-      #- ELASTICSEARCH_HOST=http://192.168.70.2
-      #- ELASTICSEARCH_PORT=9200
+      - ES_HOSTS=elasticsearch2,elasticsearch3      
       #- SET_CONTAINER_TIMEZONE=true
       #- ELASTALERT_INDEX=elastalert_status
       #- ELASTICSEARCH_USER=elastic
@@ -194,18 +173,16 @@ services:
     cpuset: "5"
     networks:
       red_sirp:
-        ipv4_address: ${IP_ELASTALERT:?err} #192.168.70.5
+        ipv4_address: ${IP_ELASTALERT:?err} 
   
 
   cortex:
-    #image: thehiveproject/cortex:latest
     image: thehiveproject/cortex:3.1.3-1
     container_name: cortex
     restart: unless-stopped
     ports:
       - "0.0.0.0:9001:9001"
     #environment:
-    #   - es_uri=http://sirpElasticsearch:9200
       #- http_proxy=${http_proxy}
       #- https_proxy=${https_proxy}  
     volumes:
@@ -213,8 +190,7 @@ services:
       - ./cortex/Cortex-Analyzers/analyzers/:/opt/Cortex-Analyzers/analyzers/
       - ./cortex/Cortex-Analyzers/responders/:/opt/Cortex-Analyzers/responders/
       - /var/run/docker.sock:/var/run/docker.sock
-      - /tmp:/tmp
-     
+      - /tmp:/tmp     
     # command:
     #   --analyzer-url /opt/Cortex-Analyzers/analyzers/
     depends_on:
@@ -225,16 +201,14 @@ services:
     cpuset: "6"
     networks:
       red_sirp:
-        ipv4_address: ${IP_CORTEX:?err}  #192.168.70.6
+        ipv4_address: ${IP_CORTEX:?err}  
 
 
 
   thehive:
-    #image: thehiveproject/thehive:latest
     image: thehiveproject/thehive:3.5.1-1
     container_name: thehive
-    restart: unless-stopped
-  
+    restart: unless-stopped  
     depends_on:
       - elasticsearch1
       - elasticsearch2
@@ -245,20 +219,15 @@ services:
       - "0.0.0.0:9000:9000"
     volumes:
       - $PWD/theHive/application.conf:/etc/thehive/application.conf
-    command: --no-config
-    #   --cortex-port 9001      
-    #   --es-uri http://elasticsearch:9200
-    #   --cortex-key u8Sxu40326S8t/ljqPBHHlP5xa+u4qBu  
-     
-    mem_limit: 1g
+    command: --no-config    
+    mem_limit: 2g
     cpuset: "7"
     networks:
       red_sirp:
-        ipv4_address: ${IP_THEHIVE:?err}  #192.168.70.7
+        ipv4_address: ${IP_THEHIVE:?err}  
   
 
   redis:
-    #image: redis:latest
     image: redis:6.2.6
     container_name: redis
     restart: unless-stopped
@@ -267,35 +236,14 @@ services:
     environment:
      - REDIS_REPLICATION_MODE=master
 
-    mem_limit: 1g
+    mem_limit: 4g
     cpuset: "3"
     networks:
       red_sirp:
-        ipv4_address: ${IP_REDIS:?err} #192.168.70.8
+        ipv4_address: ${IP_REDIS:?err} 
   
-  # redislogs:
-  #   image: redis:6.2
-  #   container_name: redislogs
-
-  #   command: redis-server --requirepass Admin@123456
-  #   ports:
-  #    - "6379:6379"
-
-  #   volumes:
-  #    - $PWD/redis_logst/redis-data:/var/lib/redis
-  #    - $PWD/redis_logst/redis.conf:/usr/local/etc/redis/redis.conf
-
-  #   environment:
-  #    - REDIS_REPLICATION_MODE=master
-  #   mem_limit: 2g
-  #   cpuset: "3"
-  #   networks:
-  #     red_sirp:
-  #       ipv4_address: ${IP_REDIS_LOGS:?err} 
-
-
+  
   db:
-    #image: mysql:latest
     image: mysql:8.0.27
     container_name: db
     restart: unless-stopped
@@ -307,20 +255,18 @@ services:
       - "MYSQL_DATABASE=misp"
     volumes:
       - ./volmysql/mysql:/var/lib/mysql
-      #- volmysql:/var/lib/mysql
-      
     ports:
       - "3306:3306"
     security_opt:
       - seccomp:unconfined
-    mem_limit: 1g
+    mem_limit: 2g
     cpuset: "3"
     networks:
       red_sirp:
-        ipv4_address: ${IP_DBMYSQL:?err} #192.168.70.9
+        ipv4_address: ${IP_DBMYSQL:?err} 
+
 
   misp:
-    #image: coolacid/misp-docker:core-latest
     image: coolacid/misp-docker:core-v2.4.150a
     container_name: misp
     restart: unless-stopped
@@ -331,41 +277,37 @@ services:
       - "80:80"
       - "443:443"
     environment:
-      - "HOSTNAME=https://${IP_MISP:?err}"
+      - "HOSTNAME=https://${IP_PUBLICA:?err}"
       - "REDIS_FQDN=redis"
       - "INIT=true"             # Initialze MISP, things includes, attempting to import SQL and the Files DIR
       - "CRON_USER_ID=1"        # The MISP user ID to run cron jobs as
       - "DISIPV6=true" # Disable IPV6 in nginx 
       - "SYNCSERVERS=1 2 3 4"  # The MISP Feed servers to sync in the cron job
+      - "NOREDIR=true" # Do not redirect port 80    
+      - "MISP_MODULES_FQDN=http://misp-modules" # Set the MISP Modules FQDN, used for Enrichment_services_url/Import_services_url/Export_services_url
+      - "WORKERS=1" #If set to a value larger than 1 this will increase the number of parallel worker processes
       # ###Database Configuration (And their defaults)
       # - "MYSQL_HOST=db"
       # - "MYSQL_USER=misp"
       # - "MYSQL_PASSWORD=example" # NOTE: This should be AlphaNum with no Special Chars. Otherwise, edit config files after first run. 
       # - "MYSQL_DATABASE=misp"
-     #### Optional Settings
-      - "NOREDIR=true" # Do not redirect port 80     
+     #### Optional Settings       
      # - "CERTAUTH=optional" # Can be set to optional or on - Step 2 of https://github.com/MISP/MISP/tree/2.4/app/Plugin/CertAuth is still required
     #  - "SECURESSL=true" # Enable higher security SSL in nginx
-      - "MISP_MODULES_FQDN=http://misp-modules" # Set the MISP Modules FQDN, used for Enrichment_services_url/Import_services_url/Export_services_url
-      - "WORKERS=1" #If set to a value larger than 1 this will increase the number of parallel worker processes
-
-
     volumes:
       - ./misp/www/app/Config/:/var/www/MISP/app/Config/
-      #- ./misp/www/app/fiels:/var/www/MISP/app/files
+      - ./misp/www/app/files:/var/www/MISP/app/files
       - ./ssl:/etc/ssl/certs
-      # - ./misp/:/var/www/MISP/.gnupg
-      # - ./misp/:/var/www/MISP/.smime
-
-    mem_limit: 1g
+      - ./misp/:/var/www/MISP/.gnupg
+      - ./misp/:/var/www/MISP/.smime
+    mem_limit: 2g
     cpuset: "3"
     networks:
       red_sirp:
-        ipv4_address: ${IP_MISP:?err} #192.168.70.20
+        ipv4_address: ${IP_MISP:?err} 
 
 
   misp-modules:
-    #image: coolacid/misp-docker:modules-latest
     image: coolacid/misp-docker:modules-v2.4.150a
     container_name: misp-modules
     restart: unless-stopped
@@ -378,7 +320,9 @@ services:
     cpuset: "3"
     networks:
       red_sirp:
-        ipv4_address: ${IP_MISP_MOD:?err} #192.168.70.21
+        ipv4_address: ${IP_MISP_MOD:?err} 
+
+
 
   wazuh:
     image: wazuh/wazuh:4.2.5
@@ -392,12 +336,11 @@ services:
       - "55000:55000"
     environment:
       - ELASTICSEARCH_URL=http://elasticsearch1:9200
+      - FILEBEAT_SSL_VERIFICATION_MODE=none
       # - ELASTIC_USERNAME=admin
       # - ELASTIC_PASSWORD=admin
       # - SSL_CERTIFICATE=./ssl/misp.crt
       # - SSL_KEY=./ssl/misp.key
-      - FILEBEAT_SSL_VERIFICATION_MODE=none
-
     volumes:  
       - ossec_api_configuration:/var/ossec/api/configuration
       - ossec_etc:/var/ossec/etc
@@ -414,7 +357,7 @@ services:
     cpuset: "0"
     networks:
       red_sirp:
-        ipv4_address: ${IP_WAZUH:?err} #192.168.70.22
+        ipv4_address: ${IP_WAZUH:?err} 
   
   
 
@@ -446,9 +389,4 @@ networks:
         - subnet: ${SUBNET}
           gateway: ${GATEWAY}
  
-# volumes:
-#   # volElasticsearchData:
-#   # volElasticsearchData2:
-#   # volElasticsearchData3:
-#   volLogstashPipeline:
-#   volKibana:
+

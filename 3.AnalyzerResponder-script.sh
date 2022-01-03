@@ -15,10 +15,11 @@ docker  cp AnalyzerCortexCopy.sh cortex:/opt
 
 #git clone https://github.com/TheHive-Project/Cortex-Analyzers
 
-sudo chown -R 1000:1000 $PWD/cortex
+#sudo chown -R 1000:1000 $PWD/cortex
+sudo chmod -R 777 $PWD/cortex
 
 #accede al contenedor al archivo copiado, da permisos de ejecucion y ejecuta
-docker exec -ti -u 0 cortex bash -c "cd /opt ; chmod +x AnalyzerCortexCopy.sh ; ./AnalyzerCortexCopy.sh"
+docker exec -ti cortex bash -c "cd /opt ; chmod +x AnalyzerCortexCopy.sh ; ./AnalyzerCortexCopy.sh"
 
 
 
@@ -28,6 +29,6 @@ docker restart cortex
 
 # ElastAlert
 # crear indice
-docker exec -ti -u 0 elastalert bash -c "elastalert-create-index"
+#docker exec -ti -u 0 elastalert bash -c "elastalert-create-index"
 
 
