@@ -287,10 +287,10 @@ services:
       - "MISP_MODULES_FQDN=http://misp-modules" # Set the MISP Modules FQDN, used for Enrichment_services_url/Import_services_url/Export_services_url
       - "WORKERS=1" #If set to a value larger than 1 this will increase the number of parallel worker processes
       # ###Database Configuration (And their defaults)
-      # - "MYSQL_HOST=db"
-      # - "MYSQL_USER=misp"
-      # - "MYSQL_PASSWORD=example" # NOTE: This should be AlphaNum with no Special Chars. Otherwise, edit config files after first run. 
-      # - "MYSQL_DATABASE=misp"
+      - "MYSQL_HOST=db"
+      - "MYSQL_USER=misp"
+      - "MYSQL_PASSWORD=example" # NOTE: This should be AlphaNum with no Special Chars. Otherwise, edit config files after first run. 
+      - "MYSQL_DATABASE=misp"
      #### Optional Settings       
      # - "CERTAUTH=optional" # Can be set to optional or on - Step 2 of https://github.com/MISP/MISP/tree/2.4/app/Plugin/CertAuth is still required
     #  - "SECURESSL=true" # Enable higher security SSL in nginx
@@ -298,7 +298,7 @@ services:
       - ./misp/www/app/Config/:/var/www/MISP/app/Config/
       - ./misp/www/app/files:/var/www/MISP/app/files
       - ./ssl:/etc/ssl/certs
-      
+
       #- ./misp/:/var/www/MISP/.gnupg
       #- ./misp/:/var/www/MISP/.smime
     mem_limit: 2g
