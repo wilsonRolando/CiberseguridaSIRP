@@ -1,0 +1,38 @@
+{
+  "name": "VirusTotal_Scan",
+  "version": "3.0",
+  "author": "CERT-BDF",
+  "url": "https://github.com/TheHive-Project/Cortex-Analyzers",
+  "license": "AGPL-V3",
+  "description": "Use VirusTotal to scan a file or URL.",
+  "dataTypeList": ["file", "url"],
+  "baseConfig": "VirusTotal",
+  "config": {
+    "service": "scan"
+  },
+  "configurationItems": [
+    {
+      "name": "key",
+      "description": "API key for Virustotal",
+      "type": "string",
+      "multi": false,
+      "required": true
+    },
+    {
+      "name": "polling_interval",
+      "description": "Define time interval between two requests attempts for the report",
+      "type": "number",
+      "multi": false,
+      "required": false,
+      "defaultValue": 60
+    },
+    {
+      "name": "highlighted_antivirus",
+      "description": "Add taxonomy if selected AV don't recognize observable",
+      "type": "string",
+      "multi": true,
+      "required": false
+    }
+  ],
+  "command": "VirusTotal/virustotal.py"
+}
