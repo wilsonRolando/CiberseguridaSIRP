@@ -26,8 +26,6 @@ docker stop elasticsearch1 elasticsearch2 elasticsearch3 kibana elastalert corte
 sudo chmod -R 777 $PWD/kibana
 # sudo chown -R 1000:1000 $PWD/logstash
 sudo chmod -R 777 $PWD/logstash
-# sudo chown -R 1000:1000 $PWD/kibana
-sudo chmod -R 777 $PWD/kibana
 # sudo chown -R 1000:1000 $PWD/elastAlert
 sudo chmod -R 777 $PWD/elastAlert
 # sudo chown -R 1000:1000 $PWD/theHive
