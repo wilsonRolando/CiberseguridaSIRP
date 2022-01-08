@@ -26,7 +26,8 @@ docker-compose -f 1.docker-compose.yml up -d
 ```
 
 ### Integración 
-- En cortex y MISP, generar la api-key de un usuario y remplazar en el campo *key* del archivo *thehive/application.conf*, reiniciar thehive
+- En cortex y MISP, generar la api-key de un usuario y remplazar en el campo *key* del archivo *thehive/application.conf*, también remplazar la ip del campo *url* de la sección de MISP
+- Reiniciar thehive
 ```yaml
 docker restart thehive
 ```
