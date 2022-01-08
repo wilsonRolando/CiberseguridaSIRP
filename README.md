@@ -1,6 +1,6 @@
 ## Plataforma de Respuesta a incidencias 
 
-![](https://www.idceconsulting.com/themes/idce/images/logo.png)
+![](https://www.idceconsulting.com/themes/idce/images/logo.png) ![]
 
 ### Requerimientos 
 - Docker 20.10 +
@@ -12,13 +12,18 @@
 ### Instalación
 * Modificar el archivo *.env* , variable de entorno IP_PUBLICA, para desplegar en un entorno local ingresar la ip del host.
 * En el directorio *CiberseguridaSIRP/*,  ejecutar:
-```bash
+```yaml
 docker-compose -f 1.docker-compose.yml up -d
+```
+```shell
 ./2.permission-script.sh
+```
+```shell
 ./3.AnalyzerResponder-script.sh
+```
+```shell
 ./4.kibanaWuazuh-Plugin.sh
 ```
-
 
 ### Integración 
 - En cortex y MISP, generar la api-key de un usuario y remplazar en el campo *key* del archivo *thehive/application.conf*, reiniciar thehive
@@ -30,3 +35,17 @@ docker restart thehive
 ### Test
 - Descargar filebeat,  configurar el archivo filebeat.yml, en el directorio test se encuentra una muestra de configuración del archivo filebeat.yml  con un test.log de prueba.
 - Ejecutar filebeat, e ingresar registros en el test.log, si todo esta correcto, los registros se observa en kibana, y al ingresar más de dos registros repetidos continuos, se generan alertas en thehive. 
+
+### Puertos
+- Elasticsearch
+http://localhost:9200
+- Kibana
+http://localhost:5601
+- Thehive
+http://localhost:9000
+- Cortex
+http://localhost:9001
+- MISP
+http://localhost
+  - usuario: **admin@admin.test**
+  - clave: **admin**
