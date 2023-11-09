@@ -1,7 +1,5 @@
 ## Plataforma de Respuesta a incidencias 
 
-![](https://www.idceconsulting.com/themes/idce/images/logo.png)
-
 ### Requerimientos 
 - Docker 20.10 +
 - Docker-compose 1.29 +
