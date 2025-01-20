@@ -2,7 +2,7 @@
 SIRP es una plataforma diseñada para ayudar a los equipos de seguridad a manejar incidentes y responder de manera eficiente. Permite la integración de múltiples fuentes de datos, como sistemas de detección de intrusiones, herramientas de análisis de vulnerabilidades y otros sistemas de seguridad, para proporcionar una visión completa de los incidentes. Además, automatiza flujos de trabajo, lo que acelera las respuestas y mejora la eficiencia operativa
 
 Este proyecto utiliza herramientas open source para proporcionar una plataforma flexible, escalable y accesible, permitiendo a las organizaciones mejorar su capacidad para detectar, gestionar y mitigar incidentes de seguridad en tiempo real.
-!["diagrama"](https//:github.com/WilsonRolando/CiberSeguridadSIRP/infraestructura.png)
+!["diagrama"](https://github.com/wilsonRolando/CiberseguridaSIRP/blob/main/infraestructura.png)
 ### Requerimientos 
 - Docker 20.10 +
 - Docker-compose 1.29 +
