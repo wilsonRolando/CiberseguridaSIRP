@@ -1,6 +1,7 @@
-## Plataforma de Respuesta a incidencias 
+## Plataforma de Respuesta a incidencias (SIRP)
+SIRP es una plataforma diseñada para ayudar a los equipos de seguridad a manejar incidentes y responder de manera eficiente. Permite la integración de múltiples fuentes de datos, como sistemas de detección de intrusiones, herramientas de análisis de vulnerabilidades y otros sistemas de seguridad, para proporcionar una visión completa de los incidentes. Además, automatiza flujos de trabajo, lo que acelera las respuestas y mejora la eficiencia operativa
 
-![](https://www.idceconsulting.com/themes/idce/images/logo.png)
+Este proyecto utiliza herramientas open source para proporcionar una plataforma flexible, escalable y accesible, permitiendo a las organizaciones mejorar su capacidad para detectar, gestionar y mitigar incidentes de seguridad en tiempo real.
 
 ### Requerimientos 
 - Docker 20.10 +
